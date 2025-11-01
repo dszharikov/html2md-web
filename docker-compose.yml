@@ -1,0 +1,7 @@
+services:
+  html2md:
+    build: .
+    container_name: html2md-web
+    ports:
+      - "8080:8080"
+    restart: unless-stopped

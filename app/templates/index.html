@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>HTML → Markdown</title>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+  <header>
+    <h1>HTML → Markdown</h1>
+    <div class="subtitle">Вставьте HTML слева — получите Markdown справа</div>
+  </header>
+
+  <main>
+    <section class="pane">
+      <label for="html-input">HTML</label>
+      <textarea id="html-input" placeholder="Вставьте сюда HTML..."></textarea>
+      <div class="row">
+        <button id="convert-btn">Конвертировать</button>
+        <button id="clear-btn" class="secondary">Очистить</button>
+        <span id="status" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <section class="pane">
+      <label for="md-output">Markdown</label>
+      <textarea id="md-output" placeholder="Здесь появится Markdown" readonly></textarea>
+      <div class="row">
+        <button id="copy-btn">Скопировать</button>
+        <button id="download-btn" class="secondary">Скачать .md</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <details>
+      <summary>Горячие клавиши</summary>
+      <ul>
+        <li><kbd>Ctrl/⌘</kbd> + <kbd>Enter</kbd> — конвертировать</li>
+        <li><kbd>Ctrl/⌘</kbd> + <kbd>C</kbd> в поле Markdown — копировать</li>
+      </ul>
+    </details>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
