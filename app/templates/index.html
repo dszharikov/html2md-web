@@ -1,46 +1,114 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-theme="">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="theme-color" content="#0f0f10"/>
   <title>HTML → Markdown</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg"/>
   <link rel="stylesheet" href="/static/style.css"/>
 </head>
 <body>
-  <header>
-    <h1>HTML → Markdown</h1>
-    <div class="subtitle">Вставьте HTML слева — получите Markdown справа</div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="/static/favicon.svg" alt="" class="logo" width="24" height="24"/>
+        <h1 class="title">HTML → Markdown</h1>
+      </div>
+      <button id="theme-toggle" class="btn btn-ghost" title="Сменить тему" aria-label="Сменить тему">Тема</button>
+    </div>
   </header>
 
-  <main>
-    <section class="pane">
-      <label for="html-input">HTML</label>
-      <textarea id="html-input" placeholder="Вставьте сюда HTML..."></textarea>
-      <div class="row">
-        <button id="convert-btn">Конвертировать</button>
-        <button id="clear-btn" class="secondary">Очистить</button>
-        <span id="status" aria-live="polite"></span>
+  <main class="container">
+    <section class="grid">
+      <div class="card">
+        <div class="card-head">
+          <h2>Входной HTML</h2>
+        </div>
+        <div class="card-body">
+          <textarea id="html-input" placeholder="Вставьте сюда HTML…"></textarea>
+          <div class="actions">
+            <button id="convert-btn" class="btn">Конвертировать</button>
+            <button id="clear-btn" class="btn btn-lite">Очистить</button>
+            <span id="status" aria-live="polite" class="status"></span>
+          </div>
+          <p class="hint">Горячие клавиши: <kbd>Ctrl/⌘</kbd> + <kbd>Enter</kbd> — конвертация.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Результат Markdown</h2>
+        </div>
+        <div class="card-body">
+          <textarea id="md-output" placeholder="Здесь появится Markdown" readonly></textarea>
+          <div class="actions">
+            <button id="copy-btn" class="btn">Скопировать</button>
+            <button id="download-btn" class="btn btn-lite">Скачать .md</button>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="pane">
-      <label for="md-output">Markdown</label>
-      <textarea id="md-output" placeholder="Здесь появится Markdown" readonly></textarea>
-      <div class="row">
-        <button id="copy-btn">Скопировать</button>
-        <button id="download-btn" class="secondary">Скачать .md</button>
+    <section class="tools">
+      <div class="card">
+        <div class="card-head">
+          <h2>Инструменты: Git и промпты для GPT</h2>
+          <p class="muted">Готовые сниппеты с копированием в 1 клик</p>
+        </div>
+
+        <div class="card-body tool">
+          <h3>Команда: подробный diff из staged (индекса)</h3>
+          <div class="snippet">
+            <code id="cmd-staged">git diff --staged --no-prefix --patch --word-diff=plain --unified=3</code>
+            <button class="btn btn-ghost" data-copy="#cmd-staged">Копировать</button>
+          </div>
+          <p class="muted">Альтернатива короче: <code id="cmd-staged-short">git diff --cached</code>
+            <button class="btn btn-ghost" data-copy="#cmd-staged-short">Копировать</button>
+          </p>
+        </div>
+
+        <div class="card-body tool">
+          <h3>Промпт для GPT: лаконичное описание изменений (для комментария в задаче)</h3>
+          <pre id="prompt-notes" class="pre">
+Ты — инженер-рецензент кода. Сформулируй краткое, но по существу описание выполненных изменений в стиле рабочего комментария к задаче.
+
+Правила:
+- 5–10 коротких пунктов списка.
+- Каждый пункт начинается с глагола совершенного вида: «Добавил», «Исправил», «Обновил», «Удалил», «Перенёс», «Оптимизировал», «Переименовал».
+- Указывай конкретику: файлы/пути, ключевые функции/классы, сценарии, миграции/скрипты.
+- Если есть изменения зависимостей/конфигов/CI/CD — отдельный пункт.
+- Если правки тестов — что покрыто.
+- Никакой воды и планов; только факты по diff.
+- Ответ в Markdown-списке (* bullets).
+
+-----BEGIN DIFF-----
+(вставь сюда ВЕСЬ git diff из staged)
+-----END DIFF-----</pre>
+          <button class="btn btn-ghost" data-copy="#prompt-notes">Копировать промпт</button>
+        </div>
+
+        <div class="card-body tool">
+          <h3>Промпт для GPT: краткий текст коммита</h3>
+          <pre id="prompt-commit" class="pre">
+Ты — помощник разработчика. На основе diff составь короткий и информативный текст коммита (не больше 72 символов в заголовке), без точки в конце. Если нужно — добавь тело коммита (wrap 72). Следуй Conventional Commits, если явно прослеживается тип: feat/fix/refactor/test/docs/chore/build/ci.
+
+Формат ответа:
+<type>(scope?): <title>
+<пустая строка, если есть тело>
+<body — пункты по сути изменений, 2–5 строк, без воды>
+
+-----BEGIN DIFF-----
+(вставь сюда ВЕСЬ git diff из staged)
+-----END DIFF-----</pre>
+          <button class="btn btn-ghost" data-copy="#prompt-commit">Копировать промпт</button>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer>
-    <details>
-      <summary>Горячие клавиши</summary>
-      <ul>
-        <li><kbd>Ctrl/⌘</kbd> + <kbd>Enter</kbd> — конвертировать</li>
-        <li><kbd>Ctrl/⌘</kbd> + <kbd>C</kbd> в поле Markdown — копировать</li>
-      </ul>
-    </details>
+  <footer class="site-footer container">
+    <span class="muted">HTML → Markdown · локально, минимализм, без внешних CDN</span>
   </footer>
 
   <script src="/static/app.js"></script>
