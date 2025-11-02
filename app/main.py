@@ -6,7 +6,6 @@ from pydantic import BaseModel
 from .converters import html_to_md_safe
 
 app = FastAPI(title="HTML → Markdown Converter")
-
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
@@ -15,7 +14,9 @@ class ConvertIn(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    resp = templates.TemplateResponse("index.html", {"request": request})
+    resp.headers["Cache-Control"] = "no-store"
+    return resp
 
 @app.post("/api/convert", response_class=JSONResponse)
 def convert(payload: ConvertIn):
