@@ -18,6 +18,17 @@ def index(request: Request):
     resp.headers["Cache-Control"] = "no-store"
     return resp
 
+@app.middleware("http")
+async def add_cache_headers(request: Request, call_next):
+    response = await call_next(request)
+    path = request.url.path
+
+    # HTML и корень уже помечены как no-store
+    if path.startswith("/static/") and path.endswith((".js", ".css", ".svg")):
+        # Обновляемость без опций URL
+        response.headers["Cache-Control"] = "no-cache, must-revalidate"
+    return response
+
 @app.post("/api/convert", response_class=JSONResponse)
 def convert(payload: ConvertIn):
     try:
